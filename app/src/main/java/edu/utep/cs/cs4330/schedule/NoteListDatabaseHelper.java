@@ -49,12 +49,13 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         values.put(KEY_CATEGORY, note.getCategory());
         values.put(KEY_DATE, note.getDate());
 
-        long success = db.insert(NOTE_TABLE, null, values);
+        long rowId = db.insert(NOTE_TABLE, null, values);
         db.close();
-        return success;
+        return rowId;
     }
 
     public boolean query(List notes){
+        notes.clear();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(NOTE_TABLE,
                 new String[] { KEY_ID, KEY_TITLE, KEY_BODY, KEY_DATE, KEY_CATEGORY },

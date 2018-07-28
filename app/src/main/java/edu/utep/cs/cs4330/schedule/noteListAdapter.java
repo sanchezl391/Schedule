@@ -65,7 +65,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             noteListView = (LinearLayout) view;
         }
 
-
         TextView noteTitle = noteListView.findViewById(R.id.noteTitle);
         TextView noteCategory = noteListView.findViewById(R.id.noteCategory);
         TextView noteDate = noteListView.findViewById(R.id.noteDate);
@@ -75,7 +74,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         noteCategory.setText(note.getCategory());
         noteDate.setText(note.getDate());
         setOptionsBtnListener(optionsBtn, position, note);
-
 
         return noteListView;
     }
@@ -114,7 +112,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             long success = helper.deleteNote(note.getId());
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
-                if (success != -1) {
+                if (success > 0) {
                     notes.remove(note); // We might not be updating the activity's list
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
@@ -142,6 +140,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             });
         }).start();
     }
+
 
 
 }

@@ -1,7 +1,5 @@
 package edu.utep.cs.cs4330.schedule;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -83,10 +81,11 @@ public class noteList extends AppCompatActivity {
             // We should parse in here
             Note note = new Note(title, body, "Some Category", "Today");
 
-            long success = helper.addItem(note);
+            long rowId = helper.addItem(note);
 
             runOnUiThread(() -> { // UI
-                if (success != -1) {
+                if (rowId != -1) {
+                    note.setId((int)rowId);
                     notes.add(note);
                     adapter.swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
@@ -103,7 +102,7 @@ public class noteList extends AppCompatActivity {
             boolean result = helper.query(notes);
 
             runOnUiThread(() -> { // UI
-                if (result) {
+                if (result == true) {
                     adapter.swapItems(notes);
                     Log.e("Success: ", "DB Query Operation Succeeded");
                 } else {
@@ -111,6 +110,13 @@ public class noteList extends AppCompatActivity {
                 }
             });
         }).start();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+//        createNoteListFromDB();
+        adapter.swapItems(notes);
     }
 
 }
