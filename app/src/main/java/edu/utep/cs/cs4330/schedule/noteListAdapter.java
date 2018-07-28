@@ -2,6 +2,7 @@ package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -9,9 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import java.util.List;
 
 public class noteListAdapter extends ArrayAdapter<Note> {
@@ -20,6 +24,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     Context ctx;
     int rsc;
     NoteListDatabaseHelper helper;
+    AlertDialog.Builder builder;
 
     /**
      * Initializes ItemAdapter
@@ -61,6 +66,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             LayoutInflater vi;
             vi = (LayoutInflater)getContext().getSystemService(inflater);
             vi.inflate(rsc, noteListView, true);
+
         } else {
             noteListView = (LinearLayout) view;
         }
@@ -69,13 +75,88 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         TextView noteCategory = noteListView.findViewById(R.id.noteCategory);
         TextView noteDate = noteListView.findViewById(R.id.noteDate);
         Button optionsBtn = noteListView.findViewById(R.id.optionsBtn);
+        LinearLayout editNoteArea = noteListView.findViewById(R.id.noteEditArea);
 
         noteTitle.setText(note.getTitle());
         noteCategory.setText(note.getCategory());
         noteDate.setText(note.getDate());
         setOptionsBtnListener(optionsBtn, position, note);
+        setEditNoteListener(editNoteArea, note);
 
         return noteListView;
+    }
+
+    /**
+     * this whole block of code is repeated!
+     * @param editNoteArea
+     */
+    public void setEditNoteListener(LinearLayout editNoteArea, Note note){
+        editNoteArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                builder = new AlertDialog.Builder(ctx);
+                String inflater = Context.LAYOUT_INFLATER_SERVICE;
+                LayoutInflater vi = (LayoutInflater)getContext().getSystemService(inflater);
+
+                View dView = vi.inflate(R.layout.dialog_add_note, null);
+                EditText title = (EditText) dView.findViewById(R.id.title);
+                EditText body = (EditText) dView.findViewById(R.id.body);
+                Button saveBtn = (Button) dView.findViewById(R.id.add);
+                Button cancelBtn = (Button) dView.findViewById(R.id.cancel);
+
+                title.setText(note.getTitle());
+                body.setText(note.getBody());
+
+                builder.setView(dView);
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+                saveBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String titleTxt = title.getText().toString();
+                        String bodyTxt = body.getText().toString();
+
+                        note.setTitle(titleTxt);
+                        note.setBody(bodyTxt);
+
+                        if(titleTxt.length() < 1 || bodyTxt.length() < 1){
+                            Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
+                        }
+                        else {
+                            updateNote(note);
+                        }
+                        dialog.dismiss();
+                    }
+                });
+                cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+            }
+        });
+    }
+
+
+    public void updateNote(Note note){
+        notes.set(notes.indexOf(note), note);
+
+        new Thread(() -> {
+            // Do in background
+            // We should parse in here
+            long rowId = helper.updateNote(note);
+
+            ((Activity) ctx).runOnUiThread(() -> { // UI
+                if (rowId > 0) {
+                    swapItems(notes);
+                    Log.e("Success: ", "DB Add Operation Succeeded");
+                } else {
+                    Log.e("Error: ", "DB Add Operation failed");
+                }
+            });
+        }).start();
     }
 
     public void setOptionsBtnListener(Button optionsBtn, int index, Note note){
