@@ -67,7 +67,8 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
                 String category = cursor.getString(cursor.getColumnIndex(KEY_CATEGORY));
                 int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
 
-                Note note = new Note(title, body, category, date, id);
+                Note note = new Note(title, body, category, date);
+                note.setId(id);
 
                 notes.add(note);
 
@@ -79,7 +80,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return true;
     }
 
-    public int deleteItem(int id) {
+    public int deleteNote(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int success = db.delete(NOTE_TABLE,
                 KEY_ID + " = ?",
@@ -88,7 +89,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return success;
     }
 
-    public int updateItem(int id, Note note) {
+    public int updateNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -101,7 +102,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         int success = db.update(NOTE_TABLE,
                 values,
                 KEY_ID + " = ?",
-                new String[] { Integer.toString(id) } );
+                new String[] { Integer.toString(note.getId()) } );
         db.close();
         return success;
     }

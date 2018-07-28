@@ -7,12 +7,12 @@ public class Note {
     private String date;
     private int id;
 
-    public Note (String title, String body, String category, String date, int id){
+    public Note (String title, String body, String category, String date){
         this.title = title;
         this.body = body;
         this.category = category;
         this.date = date;
-        this.id = id;
+//        this.id = id;
     }
 
     public String getTitle() {
@@ -31,7 +31,13 @@ public class Note {
         return date;
     }
 
-//    public void setId(int id){
-//        this.id = id;
-//    }
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+
 }
