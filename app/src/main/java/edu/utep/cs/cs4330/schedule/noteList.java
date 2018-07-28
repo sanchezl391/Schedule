@@ -40,8 +40,6 @@ public class noteList extends AppCompatActivity {
         categories = new ArrayList<String>();
 
         createListsFromDB();
-//        setupDrawer();
-
 
         listView = findViewById(R.id.listView);
         adapter = new noteListAdapter(this, R.layout.list_note_template, notes, helper);
@@ -58,41 +56,41 @@ public class noteList extends AppCompatActivity {
 
         addNoteBtn = findViewById(R.id.addBtn);
         addNoteBtn.setOnClickListener(this::displayAddNoteDialog);
-
+        setupDrawer();
     }
 
     public void setupDrawer(){
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar); // NULL ???
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-//        mDrawerLayout.addDrawerListener(
-//                new DrawerLayout.DrawerListener() {
-//                    @Override
-//                    public void onDrawerSlide(View drawerView, float slideOffset) {
-//                        // Respond when the drawer's position changes
-//                    }
-//
-//                    @Override
-//                    public void onDrawerOpened(View drawerView) {
-//                        // Respond when the drawer is opened
-//                    }
-//
-//                    @Override
-//                    public void onDrawerClosed(View drawerView) {
-//                        // Respond when the drawer is closed
-//                    }
-//
-//                    @Override
-//                    public void onDrawerStateChanged(int newState) {
-//                        // Respond when the drawer motion state changes
-//                    }
-//                }
-//        );
+        mDrawerLayout.addDrawerListener(
+                new DrawerLayout.DrawerListener() {
+                    @Override
+                    public void onDrawerSlide(View drawerView, float slideOffset) {
+                        // Respond when the drawer's position changes
+                    }
+
+                    @Override
+                    public void onDrawerOpened(View drawerView) {
+                        // Respond when the drawer is opened
+                    }
+
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        // Respond when the drawer is closed
+                    }
+
+                    @Override
+                    public void onDrawerStateChanged(int newState) {
+                        // Respond when the drawer motion state changes
+                    }
+                }
+        );
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -111,6 +109,7 @@ public class noteList extends AppCompatActivity {
                         return true;
                     }
                 });
+
 
 
     }
