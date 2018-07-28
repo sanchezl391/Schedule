@@ -9,19 +9,20 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.List;
 
 public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static int DB_VERSION;
     private static final String DB_NAME = "NoteListDB";
     private static final String NOTE_TABLE = "notes";
+    private static final String CATEGORY_TABLE = "categories";
 
     private static final String KEY_ID = "_id";
     private static final String KEY_TITLE = "title";
     private static final String KEY_BODY = "body";
     private static final String KEY_DATE = "date";
-    private static final String KEY_CATEGORY= "category";
+    private static final String KEY_CATEGORY = "category";
 
 
-    public NoteListDatabaseHelper(Context ctx) {
-        super(ctx,DB_NAME, null, DB_VERSION );
+    public NoteListDatabaseHelper(Context ctx, int version) {
+        super(ctx,DB_NAME, null, version );
     }
 
     public void onCreate(SQLiteDatabase db){
@@ -36,8 +37,25 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
-        db.execSQL("DROP TABLE IF EXISTS " + NOTE_TABLE);
-        onCreate(db);
+
+        String sql = "CREATE TABLE " + CATEGORY_TABLE + "("
+                + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + KEY_CATEGORY + " TEXT "
+                + ")";
+
+        db.execSQL(sql);
+
+    }
+
+    public long addCategory(String category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_CATEGORY, category);
+
+        long rowId = db.insert(CATEGORY_TABLE, null, values);
+        db.close();
+        return rowId;
     }
 
     public long addItem(Note note) {
@@ -54,12 +72,27 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return rowId;
     }
 
-    public boolean query(List notes){
+    public boolean query(List notes, List categories){
         notes.clear();
+        categories.clear();
+
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(NOTE_TABLE,
+        Cursor noteCursor = db.query(NOTE_TABLE,
                 new String[] { KEY_ID, KEY_TITLE, KEY_BODY, KEY_DATE, KEY_CATEGORY },
                 null, null, null, null, null);
+
+        Cursor categoryCursor = db.query(CATEGORY_TABLE,
+                new String[] { KEY_ID, KEY_CATEGORY },
+                null, null, null, null, null);
+
+        createNoteList(categoryCursor, notes);
+        createCategoryList(noteCursor, categories);
+
+        db.close();
+        return true;
+    }
+
+    public void createNoteList(Cursor cursor, List notes){
         if (cursor.moveToFirst()) {
             do { // Construct item list here
                 String title = cursor.getString(cursor.getColumnIndex(KEY_TITLE));
@@ -77,8 +110,28 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         }
 
         cursor.close();
+    }
+
+    public void createCategoryList(Cursor cursor, List categories){
+        if (cursor.moveToFirst()) {
+            do { // Construct item list here
+                String category = cursor.getString(cursor.getColumnIndex(KEY_CATEGORY));
+
+                categories.add(category);
+
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+    }
+
+
+    public int deleteCategory(String category) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        int success = db.delete(CATEGORY_TABLE,
+                KEY_CATEGORY + " = ?",
+                new String[] { category } );
         db.close();
-        return true;
+        return success;
     }
 
     public int deleteNote(int id) {
@@ -107,4 +160,20 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         db.close();
         return success;
     }
+
+    public int updateCategory(String category, String newCategoryName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        values.put(KEY_CATEGORY, newCategoryName);
+
+        int success = db.update(CATEGORY_TABLE,
+                values,
+                KEY_CATEGORY + " = ?",
+                new String[] { category } );
+        db.close();
+        return success;
+    }
+
 }
