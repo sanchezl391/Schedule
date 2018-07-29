@@ -85,8 +85,8 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
                 new String[] { KEY_ID, KEY_CATEGORY },
                 null, null, null, null, null);
 
-        createNoteList(categoryCursor, notes);
-        createCategoryList(noteCursor, categories);
+        createNoteList(noteCursor, notes);
+        createCategoryList(categoryCursor, categories);
 
         db.close();
         return true;
