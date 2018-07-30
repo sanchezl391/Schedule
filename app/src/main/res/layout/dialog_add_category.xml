@@ -8,8 +8,16 @@
     android:windowSoftInputMode="stateHidden"
     >
 
+    <TextView
+        android:id="@+id/categoryTitle"
+        android:layout_width="373dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Create A New Category"
+        android:textSize="24sp" />
+
     <EditText
-        android:id="@+id/title"
+        android:id="@+id/categoryName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -18,35 +26,11 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:editable="true"
         android:ems="10"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:hint="Enter Title Here"
+        android:hint="New Category "
         android:inputType="textPersonName" />
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="372dp"
-        android:fillViewport="true"
-        android:scrollbars="vertical">
-
-        <EditText
-            android:id="@+id/body"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:ems="10"
-            android:hint="Enter additional information here"
-            android:inputType="textMultiLine|textLongMessage|textPersonName"
-            android:selectAllOnFocus="false"
-            android:singleLine="false" />
-    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,7 +38,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/add"
+            android:id="@+id/categoryAddBtn"
             android:layout_width="125dp"
             android:layout_height="50dp"
             android:layout_marginBottom="84dp"
@@ -67,7 +51,7 @@
             android:text="Add" />
 
         <Button
-            android:id="@+id/cancel"
+            android:id="@+id/categoryCancelBtn"
             android:layout_width="125dp"
             android:layout_height="50dp"
             android:layout_marginBottom="84dp"

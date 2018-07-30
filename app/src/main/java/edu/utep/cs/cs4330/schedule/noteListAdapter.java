@@ -21,10 +21,11 @@ import java.util.List;
 public class noteListAdapter extends ArrayAdapter<Note> {
 
     List<Note> notes;
+    List<String> categories;
     Context ctx;
     int rsc;
-    NoteListDatabaseHelper helper;
-    AlertDialog.Builder builder;
+    NoteListDatabaseHelper helper;AlertDialog.Builder builder;
+
 
     /**
      * Initializes ItemAdapter
@@ -32,16 +33,22 @@ public class noteListAdapter extends ArrayAdapter<Note> {
      * @param rscId The template use to create a list of views
      * @param notes The list of notes that will be used to build the view
      */
-    public noteListAdapter(Context ctx, int rscId, List<Note> notes, NoteListDatabaseHelper helper) {
+    public noteListAdapter(Context ctx, int rscId, List<Note> notes, List<String> categories, NoteListDatabaseHelper helper) {
         super(ctx, rscId, notes);
         this.rsc = rscId;
         this.notes = notes;
+        this.categories = categories;
         this.ctx = ctx;
         this.helper = helper;
     }
 
     public void swapItems(List<Note> notes) {
         this.notes = notes;
+        notifyDataSetChanged();
+    }
+
+    public void swapCategories(List<String> categories) {
+        this.categories = categories;
         notifyDataSetChanged();
     }
 
