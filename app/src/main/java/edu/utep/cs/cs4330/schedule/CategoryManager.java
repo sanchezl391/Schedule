@@ -92,4 +92,56 @@ public class CategoryManager {
             });
         }).start();
     }
+
+    public void displayAddCategoryDialog(){
+        builder = new AlertDialog.Builder(ctx);
+        LayoutInflater li = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View dView = li.inflate(R.layout.dialog_add_category, null);
+        EditText category = (EditText) dView.findViewById(R.id.categoryName);
+        Button addBtn = (Button) dView.findViewById(R.id.categoryAddBtn);
+        Button cancelBtn = (Button) dView.findViewById(R.id.categoryCancelBtn);
+        builder.setView(dView);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        addBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String categoryName = category.getText().toString();
+
+                if(categoryName.length() < 1){
+                    Toast.makeText(ctx,"Please enter a name for category", Toast.LENGTH_SHORT);
+                }
+                else {
+                    addCategory(categoryName);
+                }
+                dialog.dismiss();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    public void addCategory(String category){
+        new Thread(() -> {
+            // Do in background
+            // We should parse in here
+
+            long rowId = helper.addCategory(category);
+
+            ((Activity) ctx).runOnUiThread(() -> { // UI
+                if (rowId != -1) {
+                    categories.add(category);
+                    adapter.swapCategories(categories);
+                    Log.e("Success: ", "DB Add Operation Succeeded");
+                } else {
+                    Log.e("Error: ", "DB Add Operation failed");
+                }
+            });
+        }).start();
+    }
 }

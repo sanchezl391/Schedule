@@ -45,6 +45,7 @@ public class noteList extends AppCompatActivity {
     private String currentCategorySelected = "";
     private Parser parser = new Parser();
     private CategoryManager categoryManager;
+    private NoteManager noteManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +61,17 @@ public class noteList extends AppCompatActivity {
         createListsFromDB();
         createListFromList(notes);
 
-        addNoteBtn = findViewById(R.id.addBtn);
-        addNoteBtn.setOnClickListener(this::displayAddNoteDialog);
         setupDrawer();
         categoryManager = new CategoryManager(helper, categories, adapter, this);
+        noteManager = new NoteManager(helper, categories, adapter, this, notes, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
+
+        addNoteBtn = findViewById(R.id.addBtn);
+        addNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                noteManager.displayAddNoteDialog(v);
+            }
+        });
 
 //        NavigationView navigationView = findViewById(R.id.drawer_layout);
 //        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
@@ -151,8 +159,6 @@ public class noteList extends AppCompatActivity {
                 }
         );
 
-
-
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -163,7 +169,7 @@ public class noteList extends AppCompatActivity {
                         mDrawerLayout.closeDrawers();
 
                         if(menuItem.getItemId() == 0)
-                            displayAddCategoryDialog();
+                            categoryManager.displayAddCategoryDialog();
                         else if(menuItem.getItemId() == 1){
                             categoryManager.displayDeleteCategoryDialog();
                         }
@@ -218,258 +224,6 @@ public class noteList extends AppCompatActivity {
         super.onResume();
         adapter.swapItems(notes);
     }
-
-
-
-
-
-
-
-//    public void displayDeleteCategoryDialog(){ //
-//        builder = new AlertDialog.Builder(this);
-//
-//        View dView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
-//        TextView title = dView.findViewById(R.id.categoryTitle);
-//        title.setText("Delete A Category");
-//        EditText category = (EditText) dView.findViewById(R.id.categoryName);
-//        Button deleteBtn = (Button) dView.findViewById(R.id.categoryAddBtn);
-//        deleteBtn.setText("Delete");
-//        Button cancelBtn = (Button) dView.findViewById(R.id.categoryCancelBtn);
-//        builder.setView(dView);
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//
-//        deleteBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String categoryName = category.getText().toString();
-//
-//                if(categoryName.length() < 1){
-//                    Toast.makeText(getApplicationContext(),"Please enter a name for category", Toast.LENGTH_SHORT);
-//                }
-//                else {
-//                    deleteCategory(categoryName);
-//                }
-//                dialog.dismiss();
-//            }
-//        });
-//        cancelBtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.dismiss();
-//            }
-//        });
-//    }
-
-    public void displayAddCategoryDialog(){
-        builder = new AlertDialog.Builder(this);
-
-        View dView = getLayoutInflater().inflate(R.layout.dialog_add_category, null);
-        EditText category = (EditText) dView.findViewById(R.id.categoryName);
-        Button addBtn = (Button) dView.findViewById(R.id.categoryAddBtn);
-        Button cancelBtn = (Button) dView.findViewById(R.id.categoryCancelBtn);
-        builder.setView(dView);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String categoryName = category.getText().toString();
-
-                if(categoryName.length() < 1){
-                    Toast.makeText(getApplicationContext(),"Please enter a name for category", Toast.LENGTH_SHORT);
-                }
-                else {
-                    addCategory(categoryName);
-                }
-                dialog.dismiss();
-            }
-        });
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-    }
-
-//    public void deleteCategory(String category){
-//        new Thread(() -> {
-//            // Do in background
-//            // We should parse in here
-//
-//            long rowId = helper.deleteCategory(category);
-//
-//            runOnUiThread(() -> { // UI
-//                if (rowId != -1) {
-//                    categories.remove(category);
-//                    adapter.swapCategories(categories);
-//                    Log.e("Success: ", "DB Add Operation Succeeded");
-//                } else {
-//                    Log.e("Error: ", "DB Add Operation failed");
-//                }
-//            });
-//        }).start();
-//    }
-
-    public void addCategory(String category){
-        new Thread(() -> {
-            // Do in background
-            // We should parse in here
-
-            long rowId = helper.addCategory(category);
-
-            runOnUiThread(() -> { // UI
-                if (rowId != -1) {
-                    categories.add(category);
-                    adapter.swapCategories(categories);
-                    Log.e("Success: ", "DB Add Operation Succeeded");
-                } else {
-                    Log.e("Error: ", "DB Add Operation failed");
-                }
-            });
-        }).start();
-    }
-
-
-
-
-
-    public void addNote(String title, String body){
-        new Thread(() -> {
-            // Do in background
-            // We should parse in here
-//            parseNote(title, body);
-            String category = parser.getKeyword(title, categories);
-            if(category.length() == 0)
-                category = currentCategorySelected;
-//            else if(!category.equals(currentCategorySelected)){
-//                notes = makeCategoryList(category);
-//                currentCategorySelected = category;
-//                createListFromList();
-//            }
-
-            Note note = new Note(title, body, category, "Today");
-
-            long rowId = helper.addItem(note);
-
-            runOnUiThread(() -> { // UI
-                if (rowId != -1) {
-                    note.setId((int)rowId);
-                    notes.add(note);
-                    adapter.swapItems(notes);
-                    Log.e("Success: ", "DB Add Operation Succeeded");
-                } else {
-                    Log.e("Error: ", "DB Add Operation failed");
-                }
-            });
-        }).start();
-    }
-
-    protected void displayAddNoteDialog(View view){
-        builder = new AlertDialog.Builder(this);
-
-        View dView = getLayoutInflater().inflate(R.layout.dialog_add_note, null);
-        EditText title = (EditText) dView.findViewById(R.id.title);
-
-        title.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String category = parser.getKeyword(s.toString(), categories);
-                StyleSpan bss;
-                bss = new StyleSpan(Typeface.NORMAL);
-                if(category.length() > 0)
-                    atLeastOneCategoryPresent = true;
-                else {
-                    atLeastOneCategoryPresent = false;
-
-                    // remove bolding
-                    categoryBolded = false;
-                }
-
-
-                if(atLeastOneCategoryPresent ){ // doesnt get executed since theres no category
-                    new Thread(() -> {
-                        // Do in background
-                        // We should parse in here
-
-                        runOnUiThread(() -> { // UI
-                            // get indices
-                            final int index = s.toString().toLowerCase().indexOf(category.toLowerCase());
-                            final int length = category.length();
-
-                            title.removeTextChangedListener(this);
-
-                            final SpannableStringBuilder sb = new SpannableStringBuilder(s.toString());
-
-//                    final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255, 0, 0));
-                            if (categoryBolded)
-                                sb.setSpan(new StyleSpan(Typeface.BOLD), index, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            else
-                                sb.setSpan(bss, index, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                            title.setText(sb);
-                            title.setSelection(s.length());
-
-                            Log.e("Title: ", s.toString());
-
-                            title.addTextChangedListener(this);
-                            categoryBolded = true;
-                        });
-                    }).start();
-                }
-
-
-
-            }
-        });
-
-
-
-        EditText body = (EditText) dView.findViewById(R.id.body);
-        Button addBtn = (Button) dView.findViewById(R.id.add);
-        Button cancelBtn = (Button) dView.findViewById(R.id.cancel);
-        builder.setView(dView);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        addBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String titleTxt = title.getText().toString();
-                String bodyTxt = body.getText().toString();
-
-                if(titleTxt.length() < 1 || bodyTxt.length() < 1){
-                    Toast.makeText(getApplicationContext(),"One or more fields are too short or empty", Toast.LENGTH_SHORT);
-                }
-                else {
-                    addNote(titleTxt, bodyTxt);
-                }
-                dialog.dismiss();
-            }
-        });
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-    }
-
-
-
-
-
 
 
 }
