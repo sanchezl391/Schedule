@@ -42,6 +42,7 @@ public class NoteManager {
     }
 
     protected void addNote(String title, String body){
+
         new Thread(() -> {
             // Do in background
             String category = parser.getKeyword(title, categories);
@@ -50,15 +51,20 @@ public class NoteManager {
             if(category.length() == 0)
                 category = currentCategorySelected;
 
-
             Note note = new Note(title, body, category, "Today");
-
             long rowId = helper.addItem(note);
 
+            if(rowId != -1){
+                note.setId((int)rowId);
+                notes.add(note);
+            }
+
+            boolean anotherCategory = !category.equals(currentCategorySelected);
+
             ((Activity) ctx).runOnUiThread(() -> { // UI
-                if (rowId != -1) {
-                    note.setId((int)rowId);
-                    notes.add(note);
+                if (!anotherCategory) {
+//                    note.setId((int)rowId);
+//                    notes.add(note);
                     adapter.swapItems(notes);
 
                     Log.e("Success: ", "DB Add Operation Succeeded");
