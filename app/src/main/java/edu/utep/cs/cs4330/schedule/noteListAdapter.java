@@ -2,7 +2,13 @@ package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextWatcher;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -25,6 +31,9 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     Context ctx;
     int rsc;
     NoteListDatabaseHelper helper;AlertDialog.Builder builder;
+    Parser parser = new Parser();
+    boolean categoryBolded;
+    boolean atLeastOneCategoryPresent;
 
 
     /**
@@ -33,13 +42,15 @@ public class noteListAdapter extends ArrayAdapter<Note> {
      * @param rscId The template use to create a list of views
      * @param notes The list of notes that will be used to build the view
      */
-    public noteListAdapter(Context ctx, int rscId, List<Note> notes, List<String> categories, NoteListDatabaseHelper helper) {
+    public noteListAdapter(Context ctx, int rscId, List<Note> notes, List<String> categories, NoteListDatabaseHelper helper, boolean atLeastOneCategoryPresent, boolean categoryBolded) {
         super(ctx, rscId, notes);
         this.rsc = rscId;
         this.notes = notes;
         this.categories = categories;
         this.ctx = ctx;
         this.helper = helper;
+        this.atLeastOneCategoryPresent = atLeastOneCategoryPresent;
+        this.categoryBolded = categoryBolded;
     }
 
     public void swapItems(List<Note> notes) {
@@ -113,6 +124,66 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
                 title.setText(note.getTitle());
                 body.setText(note.getBody());
+
+                title.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        String category = parser.getKeyword(s.toString(), categories);
+                        StyleSpan bss;
+                        bss = new StyleSpan(Typeface.NORMAL);
+                        if(category.length() > 0)
+                            atLeastOneCategoryPresent = true;
+                        else {
+                            atLeastOneCategoryPresent = false;
+
+                            // remove bolding
+                            categoryBolded = false;
+                        }
+
+
+                        if(atLeastOneCategoryPresent ){ // doesnt get executed since theres no category
+                            new Thread(() -> {
+                                // Do in background
+                                // We should parse in here
+
+                                ((Activity) ctx).runOnUiThread(() -> { // UI
+                                    // get indices
+                                    final int index = s.toString().toLowerCase().indexOf(category.toLowerCase());
+                                    final int length = category.length();
+
+                                    title.removeTextChangedListener(this);
+
+                                    final SpannableStringBuilder sb = new SpannableStringBuilder(s.toString());
+
+                                    if (categoryBolded)
+                                        sb.setSpan(new StyleSpan(Typeface.BOLD), index, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    else
+                                        sb.setSpan(bss, index, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    title.setText(sb);
+                                    title.setSelection(s.length());
+
+                                    Log.e("Title: ", s.toString());
+
+                                    title.addTextChangedListener(this);
+                                    categoryBolded = true;
+                                });
+                            }).start();
+                        }
+
+
+
+                    }
+                });
 
                 builder.setView(dView);
                 AlertDialog dialog = builder.create();

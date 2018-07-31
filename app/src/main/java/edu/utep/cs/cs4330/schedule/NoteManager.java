@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class NoteManager {
@@ -119,7 +118,6 @@ public class NoteManager {
 
                             final SpannableStringBuilder sb = new SpannableStringBuilder(s.toString());
 
-//                    final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255, 0, 0));
                             if (categoryBolded)
                                 sb.setSpan(new StyleSpan(Typeface.BOLD), index, length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                             else
