@@ -73,18 +73,7 @@ public class noteList extends AppCompatActivity {
             }
         });
 
-//        NavigationView navigationView = findViewById(R.id.drawer_layout);
-//        Spinner spinner = (Spinner) navigationView.getMenu().findItem(R.id.navigation_drawer_item3).getActionView();
-//        spinner.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_spinner_dropdown_item,language));
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                Toast.makeText(MainActivity.this,language[position],Toast.LENGTH_SHORT).show();
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
+
     }
 
     public void createListFromList(List<Note> noteList){

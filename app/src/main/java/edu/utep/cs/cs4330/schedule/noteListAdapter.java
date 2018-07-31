@@ -195,8 +195,10 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                         String titleTxt = title.getText().toString();
                         String bodyTxt = body.getText().toString();
 
-                        note.setTitle(titleTxt);
-                        note.setBody(bodyTxt);
+                        String category = parser.getKeyword(titleTxt, categories);
+
+                        if(category.length() != 0)
+                            note.setCategory(category);
 
                         if(titleTxt.length() < 1 || bodyTxt.length() < 1){
                             Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
@@ -204,6 +206,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                         else {
                             updateNote(note);
                         }
+
                         dialog.dismiss();
                     }
                 });

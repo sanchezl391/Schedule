@@ -44,16 +44,12 @@ public class NoteManager {
     protected void addNote(String title, String body){
         new Thread(() -> {
             // Do in background
-            // We should parse in here
-//            parseNote(title, body);
             String category = parser.getKeyword(title, categories);
-            if(category.length() == 0)
-                category = currentCategorySelected;
-//            else if(!category.equals(currentCategorySelected)){
-//                notes = makeCategoryList(category);
-//                currentCategorySelected = category;
-//                createListFromList();
-//            }
+
+            //this is for when creating notes within a category view
+//            if(category.length() == 0)
+//                category = currentCategorySelected;
+
 
             Note note = new Note(title, body, category, "Today");
 

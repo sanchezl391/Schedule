@@ -43,5 +43,9 @@ public class Note {
 
     public void setBody(String body){this.body = body;}
 
+    public void setCategory(String category){
+        this.category = category;
+    }
+
 
 }
