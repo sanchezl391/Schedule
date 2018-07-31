@@ -55,7 +55,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
     public void swapItems(List<Note> notes) {
         this.notes = notes;
-        notifyDataSetChanged();
+        this.notifyDataSetChanged();
     }
 
     public void swapCategories(List<String> categories) {

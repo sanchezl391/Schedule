@@ -60,6 +60,7 @@ public class NoteManager {
                     note.setId((int)rowId);
                     notes.add(note);
                     adapter.swapItems(notes);
+
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {
                     Log.e("Error: ", "DB Add Operation failed");

@@ -77,9 +77,18 @@ public class noteList extends AppCompatActivity {
     }
 
     public void createListFromList(List<Note> noteList){
-        listView = findViewById(R.id.listView);
-        adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded);
-        listView.setAdapter(adapter);
+//        if(adapter == null) {
+            listView = findViewById(R.id.listView);
+            adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded);
+            listView.setAdapter(adapter);
+//        }
+//        else{
+            adapter.swapItems(noteList);
+            categoryManager = new CategoryManager(helper, categories, adapter, this);
+            noteManager = new NoteManager(helper, categories, adapter, this, noteList, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
+//        }
+
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -172,6 +181,8 @@ public class noteList extends AppCompatActivity {
                             // make a list of items in that category
                             List<Note> categoryNotes = new ArrayList<Note>();
                             // refresh screen
+                            // change notes to all notes
+                            createListsFromDB();
                             categoryNotes = categoryManager.makeCategoryList(category, notes);
                             currentCategorySelected = category;
                             createListFromList(categoryNotes);
