@@ -48,7 +48,7 @@ public class NoteManager {
             String category = parser.getKeyword(title, categories);
 
             //this is for when creating notes within a category view
-            if(category.length() == 0)
+            if(category.length() == 0 && !currentCategorySelected.equals("All"))
                 category = currentCategorySelected;
 
             Note note = new Note(title, body, category, "Today");

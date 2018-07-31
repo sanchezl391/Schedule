@@ -42,7 +42,7 @@ public class noteList extends AppCompatActivity {
     private boolean atLeastOneCategoryPresent = false;
     private boolean categoryBolded = false;
     private int drawerItemAmount = 0;
-    private String currentCategorySelected = "";
+    private String currentCategorySelected = "All";
     private Parser parser = new Parser();
     private CategoryManager categoryManager;
     private NoteManager noteManager;
@@ -173,7 +173,9 @@ public class noteList extends AppCompatActivity {
                         }
                         else if(menuItem.getItemId() == 2){
                             createListsFromDB();
+                            currentCategorySelected = "All";
                             createListFromList(notes);
+
                         } else{
                             // get menuItem title/category
                             String category = menuItem.getTitle().toString();
