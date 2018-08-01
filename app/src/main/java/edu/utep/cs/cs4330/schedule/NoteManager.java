@@ -44,6 +44,13 @@ public class NoteManager {
     protected void addNote(String title, String body){
 
         new Thread(() -> {
+//            swapItems()
+//            categoryNotes = categoryManager.makeCategoryList(category, notes);
+//            currentCategorySelected = category;
+//            createListFromList(categoryNotes);
+
+
+
             // Do in background
             String category = parser.getKeyword(title, categories);
 
@@ -58,11 +65,13 @@ public class NoteManager {
                 note.setId((int)rowId);
                 notes.add(note);
             }
-
+            // Have to have better way of handling
             boolean anotherCategory = !category.equals(currentCategorySelected);
+            boolean withinAllCategoriesAndNoKeyword = anotherCategory && currentCategorySelected.equals("All");
+
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
-                if (!anotherCategory) {
+                if (!anotherCategory || withinAllCategoriesAndNoKeyword) {
 //                    note.setId((int)rowId);
 //                    notes.add(note);
                     adapter.swapItems(notes);
