@@ -37,7 +37,6 @@ public class noteList extends AppCompatActivity {
 //    List<Note> categoryNotes;
     List<String> categories;
     NoteListDatabaseHelper helper;
-//    Button addNoteBtn;
     noteListAdapter adapter;
     AlertDialog.Builder builder;
     private DrawerLayout mDrawerLayout;
@@ -62,11 +61,12 @@ public class noteList extends AppCompatActivity {
         categories = new ArrayList<String>();
 
         createListsFromDB();
-        createListFromList(notes);
+        createListFromList(notes); // this gets executed before db items are queried
 
         setupDrawer();
         categoryManager = new CategoryManager(helper, categories, adapter, this);
         noteManager = new NoteManager(helper, categories, adapter, this, notes, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
+
 
 
 
@@ -223,6 +223,7 @@ public class noteList extends AppCompatActivity {
             runOnUiThread(() -> { // UI
                 if (result == true) {
                     adapter.swapItems(notes);
+                    createListFromList(notes);
                     Log.e("Success: ", "DB Query Operation Succeeded");
                 } else {
                     Log.e("Error: ", "DB Query Operation failed");

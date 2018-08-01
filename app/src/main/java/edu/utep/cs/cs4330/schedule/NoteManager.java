@@ -115,7 +115,7 @@ public class NoteManager {
                         ((Activity) ctx).runOnUiThread(() -> { // UI
                             // get indices
                             final int index = s.toString().toLowerCase().indexOf(category.toLowerCase());
-                            final int length = category.length();
+                            final int length = category.length() + index;
 
                             title.removeTextChangedListener(this);
 
