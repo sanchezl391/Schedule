@@ -2,7 +2,9 @@ package edu.utep.cs.cs4330.schedule;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -35,7 +37,7 @@ public class noteList extends AppCompatActivity {
 //    List<Note> categoryNotes;
     List<String> categories;
     NoteListDatabaseHelper helper;
-    Button addNoteBtn;
+//    Button addNoteBtn;
     noteListAdapter adapter;
     AlertDialog.Builder builder;
     private DrawerLayout mDrawerLayout;
@@ -46,6 +48,7 @@ public class noteList extends AppCompatActivity {
     private Parser parser = new Parser();
     private CategoryManager categoryManager;
     private NoteManager noteManager;
+    private FloatingActionButton addNoteBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +68,19 @@ public class noteList extends AppCompatActivity {
         categoryManager = new CategoryManager(helper, categories, adapter, this);
         noteManager = new NoteManager(helper, categories, adapter, this, notes, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
 
-        addNoteBtn = findViewById(R.id.addBtn);
+
+
+        addNoteBtn = findViewById(R.id.addNoteBtn);
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                noteManager.displayAddNoteDialog(v);
+            public void onClick(View view) {
+                noteManager.displayAddNoteDialog(view);
+
+                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
             }
         });
+
 
 
     }
@@ -103,6 +112,7 @@ public class noteList extends AppCompatActivity {
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setBackgroundColor(0xff3498db);
         setSupportActionBar(toolbar);
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
