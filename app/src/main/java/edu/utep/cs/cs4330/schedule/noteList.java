@@ -223,7 +223,6 @@ public class noteList extends AppCompatActivity {
             runOnUiThread(() -> { // UI
                 if (result == true) {
                     adapter.swapItems(notes);
-                    createListFromList(notes);
                     Log.e("Success: ", "DB Query Operation Succeeded");
                 } else {
                     Log.e("Error: ", "DB Query Operation failed");
