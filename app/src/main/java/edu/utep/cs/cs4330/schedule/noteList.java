@@ -67,9 +67,6 @@ public class noteList extends AppCompatActivity {
         categoryManager = new CategoryManager(helper, categories, adapter, this);
         noteManager = new NoteManager(helper, categories, adapter, this, notes, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
 
-
-
-
         addNoteBtn = findViewById(R.id.addNoteBtn);
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,12 +195,28 @@ public class noteList extends AppCompatActivity {
                             categoryNotes = categoryManager.makeCategoryList(category, notes);
                             currentCategorySelected = category;
                             createListFromList(categoryNotes);
+//                            updateAdapter(categoryNotes);
                         }
 
                         return true;
                     }
                 });
     }
+
+//    public void updateAdapter(List<Note> noteList){
+//    //Might need a different way to update adapter items
+//        listView = findViewById(R.id.listView);
+//        adapter.setNewAttributes(noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded, currentCategorySelected);
+//        listView.setAdapter(adapter);
+//
+//        adapter.swapItems(noteList);
+//
+////        categoryManager = new CategoryManager(helper, categories, adapter, this);
+////        noteManager = new NoteManager(helper, categories, adapter, this, noteList, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
+//
+//
+//
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

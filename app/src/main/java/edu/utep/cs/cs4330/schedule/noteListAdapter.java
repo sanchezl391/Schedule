@@ -35,6 +35,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     boolean categoryBolded;
     boolean atLeastOneCategoryPresent;
     private String currentCategorySelected;
+    Note newNote;
 
     /**
      * Initializes ItemAdapter
@@ -231,13 +232,26 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
 
     public void updateNote(Note note, String newCategory){
+        // first get index, must be exactly the same
+        int i = -1;
         note.setCategory(newCategory);
-        notes.set(notes.indexOf(note), note);
+        newNote = note;
+        for (Note n : notes){
+            if(note.getId() == n.getId()){
+                i = notes.indexOf(n);
+
+                n.setTitle(note.getTitle());
+                n.setCategory(note.getBody());
+                newNote = n;
+            }
+        }
+
+        notes.set(i, note);
         new Thread(() -> {
             // Do in background
             // We should parse in here
 
-            long rowId = helper.updateNote(note);
+            long rowId = helper.updateNote(newNote);
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (rowId > 0) {
@@ -295,7 +309,15 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         }).start();
     }
 
-
+//    public void setNewAttributes(List<Note> notes, List<String> categories, NoteListDatabaseHelper helper, boolean atLeastOneCategoryPresent, boolean categoryBolded, String currentCategorySelected){
+//        super(ctx, rsc, notes);
+//        this.notes = notes;
+//        this.categories = categories;
+//        this.helper = helper;
+//        this.atLeastOneCategoryPresent = atLeastOneCategoryPresent;
+//        this.categoryBolded = categoryBolded;
+//        this.currentCategorySelected = currentCategorySelected;
+//    }
 
 }
 
