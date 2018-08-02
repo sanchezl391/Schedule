@@ -241,7 +241,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                 i = notes.indexOf(n);
 
                 n.setTitle(note.getTitle());
-                n.setCategory(note.getBody());
+                n.setBody(note.getBody());
                 newNote = n;
             }
         }
