@@ -88,7 +88,7 @@ public class noteList extends AppCompatActivity {
     public void createListFromList(List<Note> noteList){
 //        if(adapter == null) {
             listView = findViewById(R.id.listView);
-            adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded);
+            adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded, currentCategorySelected);
             listView.setAdapter(adapter);
 //        }
 //        else{

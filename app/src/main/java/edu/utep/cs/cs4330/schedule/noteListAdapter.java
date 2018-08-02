@@ -34,7 +34,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     Parser parser = new Parser();
     boolean categoryBolded;
     boolean atLeastOneCategoryPresent;
-
+    private String currentCategorySelected;
 
     /**
      * Initializes ItemAdapter
@@ -42,7 +42,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
      * @param rscId The template use to create a list of views
      * @param notes The list of notes that will be used to build the view
      */
-    public noteListAdapter(Context ctx, int rscId, List<Note> notes, List<String> categories, NoteListDatabaseHelper helper, boolean atLeastOneCategoryPresent, boolean categoryBolded) {
+    public noteListAdapter(Context ctx, int rscId, List<Note> notes, List<String> categories, NoteListDatabaseHelper helper, boolean atLeastOneCategoryPresent, boolean categoryBolded, String currentCategorySelected) {
         super(ctx, rscId, notes);
         this.rsc = rscId;
         this.notes = notes;
@@ -51,6 +51,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         this.helper = helper;
         this.atLeastOneCategoryPresent = atLeastOneCategoryPresent;
         this.categoryBolded = categoryBolded;
+        this.currentCategorySelected = currentCategorySelected;
     }
 
     public void swapItems(List<Note> notes) {
@@ -197,14 +198,22 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
                         String category = parser.getKeyword(titleTxt, categories);
 
-                        if(category.length() != 0)
-                            note.setCategory(category);
+                        if(category.length() != 0 && !currentCategorySelected.equals("All"))
+                            category = currentCategorySelected;
 
                         if(titleTxt.length() < 1 || bodyTxt.length() < 1){
                             Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
                         }
                         else {
-                            updateNote(note);
+                            boolean anotherCategory = !category.equals(currentCategorySelected);
+                            boolean withinAllCategoriesAndNoKeyword = anotherCategory && currentCategorySelected.equals("All");
+
+                            if(!anotherCategory || withinAllCategoriesAndNoKeyword) {
+                                note.setTitle(titleTxt);
+                                note.setBody(bodyTxt);
+                                updateNote(note, category);
+
+                            }
                         }
 
                         dialog.dismiss();
@@ -221,12 +230,13 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     }
 
 
-    public void updateNote(Note note){
+    public void updateNote(Note note, String newCategory){
+        note.setCategory(newCategory);
         notes.set(notes.indexOf(note), note);
-
         new Thread(() -> {
             // Do in background
             // We should parse in here
+
             long rowId = helper.updateNote(note);
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
@@ -276,24 +286,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (success > 0) {
                     notes.remove(note); // We might not be updating the activity's list
-                    swapItems(notes);
-                    Log.e("Success: ", "DB Add Operation Succeeded");
-                } else {
-                    Log.e("Error: ", "DB Add Operation failed");
-                }
-            });
-        }).start();
-    }
-
-    public void editNote(Note note){
-        notes.set(notes.indexOf(note), note);
-
-        new Thread(() -> {
-            // Do in background
-            int success = helper.updateNote(note);
-
-            ((Activity) ctx).runOnUiThread(() -> { // UI
-                if (success != -1) {
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {
