@@ -62,14 +62,24 @@ public class NoteManager {
 
             Note note = new Note(title, body, category, "Today");
 
+            String year;
+            String month;
+            String day;
+            String hour;
+            String minute;
+            String time = "";
+
+            if(dateAndTime.get(Calendar.ERA) != 1){
+                year = dateAndTime.get(dateAndTime.YEAR) + "";
+                month = dateAndTime.get(dateAndTime.MONTH) + "";
+                day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
+                hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
+                minute = dateAndTime.get(dateAndTime.MINUTE) + "";
+                time = year + " " + month + " " + day + " " + hour + " " + minute;
+            }
 
 
-            String year = dateAndTime.get(dateAndTime.YEAR) + "";
-            String month = dateAndTime.get(dateAndTime.MONTH) + "";
-            String day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";;
-            String hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
-            String minute = dateAndTime.get(dateAndTime.MINUTE) + "";
-            String time = year + " " + month + " " + day + " " + hour + " " + minute;
+
 
             note.setTime(time);
 
@@ -203,6 +213,7 @@ public class NoteManager {
                     Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
                 }
                 else {
+//                    addNote(titleTxt, bodyTxt, dateAndTime);
                     addNote(titleTxt, bodyTxt, dateAndTime);
                 }
                 dialog.dismiss();
@@ -235,6 +246,7 @@ public class NoteManager {
     public Calendar setupTimeGUI(View view){
         Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
+        currentTime.set(Calendar.ERA, 1);
 
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
@@ -258,7 +270,10 @@ public class NoteManager {
                                 Log.e("Hour: ", hourOfDay + "");
                                 Log.e("Minute: ", minute + "");
 //                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
+
                                 currentTime.set(year, month + 1, dayOfMonth, hourOfDay, minute);
+                                currentTime.set(Calendar.ERA, 2);
+
                             }
                         },hour, minute, true);
                         timePickerDialog.show();
@@ -269,6 +284,7 @@ public class NoteManager {
 
             }
         });
+
         return currentTime;
     }
 
