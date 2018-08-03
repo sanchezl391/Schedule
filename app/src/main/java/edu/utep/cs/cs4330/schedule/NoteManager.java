@@ -98,7 +98,7 @@ public class NoteManager {
                 notes.add(note);
                 if(time.length() > 0){
                     WakefulReceiver receiver = new WakefulReceiver();
-                    receiver.setAlarm(ctx, time);
+                    receiver.setAlarm(ctx, time, note.getTitle());
                 }
             }
             // Have to have better way of handling

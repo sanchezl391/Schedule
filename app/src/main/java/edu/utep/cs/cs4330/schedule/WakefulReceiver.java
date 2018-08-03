@@ -30,10 +30,12 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
         NotificationManager nm = (NotificationManager) context.getSystemService
                 (NOTIFICATION_SERVICE);
         NotificationCompat.Builder notifBuilder;
+
+        String notificationTxt = intent.getStringExtra("notification");
         notifBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("Meeting Reminder")
-                .setContentText("Reminder: Meeting starts in 5 minutes");
+                .setContentTitle("Task Reminder")
+                .setContentText(notificationTxt);
         nm.notify(1, notifBuilder.build());
     }
 
@@ -44,9 +46,11 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
      *
      * @param context the context of the app's Activity.
      */
-    public void setAlarm(Context context, String time) {
+    public void setAlarm(Context context, String time, String title) {
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakefulReceiver.class);
+        intent.putExtra("notification", title);
+
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
