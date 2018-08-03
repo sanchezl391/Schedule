@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -99,7 +100,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         TextView noteTitle = noteListView.findViewById(R.id.noteTitle);
         TextView noteCategory = noteListView.findViewById(R.id.noteCategory);
         TextView noteDate = noteListView.findViewById(R.id.noteDate);
-        Button optionsBtn = noteListView.findViewById(R.id.optionsBtn);
+        RadioButton deleteBtn = noteListView.findViewById(R.id.deleteBtn);
         LinearLayout editNoteArea = noteListView.findViewById(R.id.noteEditArea);
 
         noteTitle.setText(note.getTitle());
@@ -121,7 +122,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             noteDate.setText(month + "/" + day + "    " + hour + ":" + minute + " " + halfDay);
         }
 
-        setOptionsBtnListener(optionsBtn, position, note);
+        setDeleteBtnListener(deleteBtn, position, note);
         setEditNoteListener(editNoteArea, note);
         return noteListView;
     }
@@ -297,33 +298,30 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         }).start();
     }
 
-    public void setOptionsBtnListener(Button optionsBtn, int index, Note note){
-        optionsBtn.setOnClickListener(new View.OnClickListener() {
+    public void setDeleteBtnListener(Button deleteBtn, int index, Note note){
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PopupMenu popup = new PopupMenu(getContext(), v);
-                setMenuOptionsClickListener(popup, index, note);
-                popup.inflate(R.menu.options_menu);
-                popup.show();
+                deleteNote(note);
             }
         });
     }
 
-    public void setMenuOptionsClickListener(PopupMenu menu, int index, Note note) {
-        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem option) {
-                switch(option.getItemId()){
-                    case R.id.deleteItemOption:
-                        deleteNote(note);
-                        return true;
-                }
-
-                return false;
-            }
-
-        });
-    }
+//    public void setMenuOptionsClickListener(PopupMenu menu, int index, Note note) {
+//        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem option) {
+//                switch(option.getItemId()){
+//                    case R.id.deleteItemOption:
+//                        deleteNote(note);
+//                        return true;
+//                }
+//
+//                return false;
+//            }
+//
+//        });
+//    }
 
     public void deleteNote(Note note){
         new Thread(() -> {
