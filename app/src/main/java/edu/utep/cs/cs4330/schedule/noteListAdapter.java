@@ -330,7 +330,11 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (success > 0) {
-                    notes.remove(note); // We might not be updating the activity's list
+                    if(note.getTime().length() > 0){
+                        WakefulReceiver receiver = new WakefulReceiver();
+                        receiver.cancelAlarm(ctx, note);
+                    }
+                    notes.remove(note);
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {

@@ -54,43 +54,45 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="63dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/add"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="84dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:background="#8BC34A"
-                android:text="Add" />
+                android:id="@+id/time"
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="Set Notification" />
 
             <Button
                 android:id="@+id/cancel"
-                android:layout_width="125dp"
-                android:layout_height="50dp"
-                android:layout_marginBottom="84dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="1"
-                android:text="Cancel" />
+                android:layout_width="150dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_weight="0"
+                android:text="CANCEL" />
 
         </LinearLayout>
 
         <Button
-            android:id="@+id/time"
+            android:id="@+id/add"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Set A Notification" />
-
+            android:layout_height="50dp"
+            android:layout_marginBottom="84dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="#8BC34A"
+            android:text="Add"
+            android:textSize="18sp" />
 
 
     </LinearLayout>

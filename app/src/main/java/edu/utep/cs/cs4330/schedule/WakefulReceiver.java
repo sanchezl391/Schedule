@@ -92,12 +92,12 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
      *
      * @param context the context of the app's Activity
      */
-    public void cancelAlarm(Context context) {
+    public void cancelAlarm(Context context, Note note) {
         Log.d("WakefulAlarmReceiver", "{cancelAlarm}");
 
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakefulReceiver.class);
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, note.getId(), intent, 0);
 
         mAlarmManager.cancel(alarmIntent);
 
