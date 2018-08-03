@@ -1,6 +1,8 @@
 package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
@@ -16,12 +18,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class noteListAdapter extends ArrayAdapter<Note> {
@@ -142,6 +147,8 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                 title.setText(note.getTitle());
                 body.setText(note.getBody());
 
+                Calendar dateAndTime = setupTimeGUI(dView, note);
+
                 title.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -227,8 +234,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                             if(!anotherCategory || withinAllCategoriesAndNoKeyword) {
                                 note.setTitle(titleTxt);
                                 note.setBody(bodyTxt);
-                                updateNote(note, category);
-
+                                updateNote(note, category, dateAndTime);
                             }
                         }
 
@@ -246,7 +252,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     }
 
 
-    public void updateNote(Note note, String newCategory){
+    public void updateNote(Note note, String newCategory, Calendar dateAndTime){
         // first get index, must be exactly the same
         int i = -1;
         note.setCategory(newCategory);
@@ -261,12 +267,24 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             }
         }
 
+        String year = dateAndTime.get(dateAndTime.YEAR) + "";
+        String month = dateAndTime.get(dateAndTime.MONTH) + "";
+        String day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
+        String hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
+        String minute = dateAndTime.get(dateAndTime.MINUTE) + "";
+        String time = year + " " + month + " " + day + " " + hour + " " + minute;
+        // ????
+        note.setTime(time);
+
         notes.set(i, note);
+//        notes.set(i, newNote);
+
         new Thread(() -> {
             // Do in background
             // We should parse in here
 
-            long rowId = helper.updateNote(newNote);
+//            long rowId = helper.updateNote(newNote);
+            long rowId = helper.updateNote(note);
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (rowId > 0) {
@@ -324,16 +342,65 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         }).start();
     }
 
-//    public void setNewAttributes(List<Note> notes, List<String> categories, NoteListDatabaseHelper helper, boolean atLeastOneCategoryPresent, boolean categoryBolded, String currentCategorySelected){
-//        super(ctx, rsc, notes);
-//        this.notes = notes;
-//        this.categories = categories;
-//        this.helper = helper;
-//        this.atLeastOneCategoryPresent = atLeastOneCategoryPresent;
-//        this.categoryBolded = categoryBolded;
-//        this.currentCategorySelected = currentCategorySelected;
-//    }
+    public Calendar setupTimeGUI(View view, Note note){
+        Button timeBtn = (Button) view.findViewById(R.id.time);
+        Calendar currentTime = Calendar.getInstance();
 
+        int dayOfMonth;
+        int month;
+        int hour;
+        int minute;
+        int year = currentTime.get(Calendar.YEAR);
+
+
+
+        if(note.getTime().length() > 0){
+            String[] splitArray = note.getTime().split("\\s+");
+            month = Integer.parseInt(splitArray[1]) - 1;
+            dayOfMonth = Integer.parseInt(splitArray[2]);
+            hour = Integer.parseInt(splitArray[3]);
+            minute = Integer.parseInt(splitArray[4]);
+        } else {
+            hour = currentTime.get(Calendar.HOUR_OF_DAY);
+            minute = currentTime.get(Calendar.MINUTE);
+            dayOfMonth = currentTime.get(Calendar.DAY_OF_MONTH);
+            month = currentTime.get(Calendar.MONTH);
+        }
+
+
+
+
+//        String format = formatTime(hour);
+//        timeBtn.setText(hour + " : " + minute + " " + format);
+        timeBtn.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v){
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ctx, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(ctx, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//                                formatTime(hourOfDay);
+                                Log.e("Hour: ", hourOfDay + "");
+                                Log.e("Minute: ", minute + "");
+//                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
+                                currentTime.set(year, month + 1 , dayOfMonth, hourOfDay, minute);
+                            }
+                        },hour, minute, true);
+                        timePickerDialog.show();
+                    }
+                }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+
+            }
+        });
+        return currentTime;
+    }
 }
 
 

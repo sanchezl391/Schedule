@@ -73,7 +73,6 @@ public class NoteManager {
 
             note.setTime(time);
 
-            String[] splitArray = time.split("\\s+");
 
 
 
@@ -237,14 +236,13 @@ public class NoteManager {
         Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
 
-
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
         int dayOfMonth = currentTime.get(Calendar.DAY_OF_MONTH);
-        int month = currentTime.get(Calendar.MONTH);
+        int month = currentTime.get(Calendar.MONTH) + 1;
         int year = currentTime.get(Calendar.YEAR);
 
-        String format = formatTime(hour);
+//        String format = formatTime(hour);
 //        timeBtn.setText(hour + " : " + minute + " " + format);
         timeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -253,12 +251,6 @@ public class NoteManager {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-
-
-
-
-
-
                         TimePickerDialog timePickerDialog = new TimePickerDialog(ctx, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -266,7 +258,7 @@ public class NoteManager {
                                 Log.e("Hour: ", hourOfDay + "");
                                 Log.e("Minute: ", minute + "");
 //                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
-                                currentTime.set(year, month, dayOfMonth, hourOfDay, minute);
+                                currentTime.set(year, month + 1, dayOfMonth, hourOfDay, minute);
                             }
                         },hour, minute, true);
                         timePickerDialog.show();
