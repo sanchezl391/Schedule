@@ -234,7 +234,7 @@ public class NoteManager {
     }
 
     public Calendar setupTimeGUI(View view){
-        ImageButton timeBtn = (ImageButton) view.findViewById(R.id.time);
+        Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
 
 
