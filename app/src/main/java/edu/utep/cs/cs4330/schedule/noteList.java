@@ -54,7 +54,7 @@ public class noteList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_list);
 
-        helper = new NoteListDatabaseHelper(this, 2);
+        helper = new NoteListDatabaseHelper(this, 3);
 
         notes = new ArrayList<Note>();
 //        categoryNotes = new ArrayList<Note>();
@@ -79,7 +79,8 @@ public class noteList extends AppCompatActivity {
         });
 
 
-
+    WakefulReceiver receiver = new WakefulReceiver();
+    receiver.setAlarm(this);
     }
 
     public void createListFromList(List<Note> noteList){

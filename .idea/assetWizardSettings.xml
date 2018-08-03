@@ -55,10 +55,11 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="imageAsset" value="C:\Users\luis\Downloads\add_item_icon.png" />
-                                      <entry key="outputName" value="ic_plus_32" />
+                                      <entry key="assetType" value="IMAGE" />
+                                      <entry key="imageAsset" value="C:\Users\luis\Downloads\flat-2442462_640.png" />
+                                      <entry key="outputName" value="ic_time" />
                                       <entry key="theme" value="CUSTOM" />
-                                      <entry key="themeColor" value="ffffff" />
+                                      <entry key="themeColor" value="1d1d1d" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -104,9 +105,10 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="outputName" value="ic_plus_24" />
-                            <entry key="sourceFile" value="C:\Users\luis" />
+                            <entry key="outputName" value="time_picker" />
+                            <entry key="sourceFile" value="C:\Users\luis\Downloads\flat-2442462.svg" />
                           </map>
                         </option>
                       </PersistentState>
