@@ -99,10 +99,25 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
         noteTitle.setText(note.getTitle());
         noteCategory.setText(note.getCategory());
-        noteDate.setText(note.getTime());
+        noteDate.setText("");
+
+        if(note.getTime().length() > 0){
+            String[] splitArray = note.getTime().split("\\s+");
+            String month = splitArray[1];
+            String day = splitArray[2];
+            String hour = splitArray[3];
+            String minute = splitArray[4];
+            if(minute.length() < 2)
+                minute = "0" + minute;
+            int intHour = Integer.parseInt(hour);
+            String halfDay = "AM";
+            if(intHour > 12)
+                halfDay = "PM";
+            noteDate.setText(month + "/" + day + "    " + hour + ":" + minute + " " + halfDay);
+        }
+
         setOptionsBtnListener(optionsBtn, position, note);
         setEditNoteListener(editNoteArea, note);
-
         return noteListView;
     }
 
