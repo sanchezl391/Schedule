@@ -116,7 +116,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                 minute = "0" + minute;
             int intHour = Integer.parseInt(hour);
             String halfDay = "AM";
-            if(intHour > 12)
+            if(intHour >= 12)
                 halfDay = "PM";
             noteDate.setText(month + "/" + day + "    " + hour + ":" + minute + " " + halfDay);
         }
