@@ -289,6 +289,9 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (rowId > 0) {
+                    WakefulReceiver receiver = new WakefulReceiver();
+                    receiver.cancelAlarm(ctx, note);
+                    receiver.setAlarm(ctx, note);
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {

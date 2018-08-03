@@ -4,4 +4,5 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="deleteBtn">#EA2027</color>
+    <color name="cancelBtn">#FFC312</color>
 </resources>

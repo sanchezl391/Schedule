@@ -31,6 +31,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="400dp"
+            android:fadeScrollbars="false"
             android:fillViewport="true"
             android:scrollbars="vertical">
 
@@ -69,21 +70,35 @@
                 android:text="Set Notification" />
 
             <Button
-                android:id="@+id/cancel"
+                android:id="@+id/clearNotificationBtn"
                 android:layout_width="150dp"
                 android:layout_height="60dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="0"
-                android:text="CANCEL" />
+                android:text="CLEAR NOTIFICATIONS" />
 
         </LinearLayout>
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="1"
+            android:background="#FFC312"
+            android:text="CANCEL"
+            android:textSize="18sp" />
 
         <Button
             android:id="@+id/add"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginBottom="84dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
@@ -91,7 +106,7 @@
             android:layout_marginTop="8dp"
             android:layout_weight="1"
             android:background="#8BC34A"
-            android:text="Add"
+            android:text="SAVE"
             android:textSize="18sp" />
 
 
