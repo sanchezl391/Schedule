@@ -1,6 +1,7 @@
 package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -49,7 +50,7 @@ public class NoteManager {
         this.categoryBolded = categoryBolded;
     }
 
-    protected void addNote(String title, String body, Calendar dateAndTime){
+    protected void addNote(String title, String body, Calendar dateAndTime, Button clearNotificationBtn){
 
         new Thread(() -> {
 
@@ -69,7 +70,10 @@ public class NoteManager {
             String minute;
             String time = "";
 
-            if(dateAndTime.get(Calendar.ERA) != 0){
+            String notificationStatus = clearNotificationBtn.getText().toString();
+            boolean notificationsEnabled = !notificationStatus.equals("CLEAR NOTIFICATIONS") || notificationStatus.equals("CLEAR NOTIFICATION");
+
+            if(dateAndTime.get(Calendar.ERA) != 0 || notificationsEnabled ){
                 year = dateAndTime.get(dateAndTime.YEAR) + "";
                 month = dateAndTime.get(dateAndTime.MONTH) + "";
                 day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
@@ -194,7 +198,14 @@ public class NoteManager {
 
 
 
-
+        Button clearNotificationBtn = dView.findViewById(R.id.clearNotificationBtn);
+        clearNotificationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearNotificationBtn.setText("CLEAR NOTIFICATION");
+                Toast.makeText(ctx, "Notifications removed for this note", Toast.LENGTH_SHORT);
+            }
+        });
 
 
 
@@ -218,7 +229,8 @@ public class NoteManager {
                 }
                 else {
 //                    addNote(titleTxt, bodyTxt, dateAndTime);
-                    addNote(titleTxt, bodyTxt, dateAndTime);
+                    addNote(titleTxt, bodyTxt, dateAndTime, clearNotificationBtn);
+
                 }
                 dialog.dismiss();
             }
@@ -291,10 +303,5 @@ public class NoteManager {
 
         return currentTime;
     }
-
-    public void setTime(){}
-
-    public void setDate(){}
-
 
 }

@@ -102,6 +102,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         TextView noteDate = noteListView.findViewById(R.id.noteDate);
         RadioButton deleteBtn = noteListView.findViewById(R.id.deleteBtn);
         LinearLayout editNoteArea = noteListView.findViewById(R.id.noteEditArea);
+        Button clearNotificationBtn = noteListView.findViewById(R.id.clearNotificationBtn);
 
         noteTitle.setText(note.getTitle());
         noteCategory.setText(note.getCategory());
@@ -122,10 +123,13 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             noteDate.setText(month + "/" + day + "    " + hour + ":" + minute + " " + halfDay);
         }
 
+
         setDeleteBtnListener(deleteBtn, position, note);
         setEditNoteListener(editNoteArea, note);
         return noteListView;
     }
+
+
 
     /**
      * this whole block of code is repeated!
@@ -149,6 +153,15 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                 body.setText(note.getBody());
 
                 Calendar dateAndTime = setupTimeGUI(dView, note);
+
+                Button clearNotificationBtn = dView.findViewById(R.id.clearNotificationBtn);
+                clearNotificationBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        clearNotificationBtn.setText("CLEAR NOTIFICATION");
+                        Toast.makeText(ctx, "Notifications removed for this note", Toast.LENGTH_SHORT);
+                    }
+                });
 
                 title.addTextChangedListener(new TextWatcher() {
                     @Override
@@ -235,7 +248,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                             if(!anotherCategory || withinAllCategoriesAndNoKeyword) {
                                 note.setTitle(titleTxt);
                                 note.setBody(bodyTxt);
-                                updateNote(note, category, dateAndTime);
+                                updateNote(note, category, dateAndTime, clearNotificationBtn);
                             }
                         }
 
@@ -253,7 +266,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     }
 
 
-    public void updateNote(Note note, String newCategory, Calendar dateAndTime){
+    public void updateNote(Note note, String newCategory, Calendar dateAndTime, Button clearNotificationButton){
         // first get index, must be exactly the same
         int i = -1;
         note.setCategory(newCategory);
@@ -268,17 +281,33 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             }
         }
 
-        String year = dateAndTime.get(dateAndTime.YEAR) + "";
-        String month = dateAndTime.get(dateAndTime.MONTH) + "";
-        String day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
-        String hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
-        String minute = dateAndTime.get(dateAndTime.MINUTE) + "";
-        String time = year + " " + month + " " + day + " " + hour + " " + minute;
+
         // ????
+
+        String time = "";
+
+        String notificationStatus = clearNotificationButton.getText().toString();
+        boolean notificationsEnabled = !notificationStatus.equals("CLEAR NOTIFICATION");
+
+        if(dateAndTime.get(Calendar.ERA) != 0 ){
+            String year = dateAndTime.get(dateAndTime.YEAR) + "";
+            String month = dateAndTime.get(dateAndTime.MONTH) + "";
+            String day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
+            String hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
+            String minute = dateAndTime.get(dateAndTime.MINUTE) + "";
+            time = year + " " + month + " " + day + " " + hour + " " + minute;
+        }
+
+        if(!notificationsEnabled){
+            time="";
+        }
+
+
         note.setTime(time);
 
         notes.set(i, note);
 //        notes.set(i, newNote);
+        String timeLambda = time;
 
         new Thread(() -> {
             // Do in background
@@ -286,12 +315,16 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
 //            long rowId = helper.updateNote(newNote);
             long rowId = helper.updateNote(note);
+            if(timeLambda.length() > 0){
+                WakefulReceiver receiver = new WakefulReceiver();
+                receiver.cancelAlarm(ctx, note);
+                receiver.setAlarm(ctx, note);
+            }
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (rowId > 0) {
-                    WakefulReceiver receiver = new WakefulReceiver();
-                    receiver.cancelAlarm(ctx, note);
-                    receiver.setAlarm(ctx, note);
+
+
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {
