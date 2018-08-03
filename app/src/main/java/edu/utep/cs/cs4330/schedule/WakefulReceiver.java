@@ -44,7 +44,7 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
      *
      * @param context the context of the app's Activity.
      */
-    public void setAlarm(Context context) {
+    public void setAlarm(Context context, String time) {
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakefulReceiver.class);
         PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
@@ -52,7 +52,17 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
         //// TODO: use calendar.add(Calendar.SECOND,MINUTE,HOUR, int);
-        calendar.add(Calendar.SECOND, 8);
+
+        String[] splitArray = time.split("\\s+");
+        int month = Integer.parseInt(splitArray[1]) - 1;
+        int dayOfMonth = Integer.parseInt(splitArray[2]);
+        int hour = Integer.parseInt(splitArray[3]);
+        int minute = Integer.parseInt(splitArray[4]);
+
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
 
         //ALWAYS recompute the calendar after using add, set, roll
         Date date = calendar.getTime();

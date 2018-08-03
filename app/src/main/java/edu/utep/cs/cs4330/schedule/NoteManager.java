@@ -69,7 +69,7 @@ public class NoteManager {
             String minute;
             String time = "";
 
-            if(dateAndTime.get(Calendar.ERA) != 1){
+            if(dateAndTime.get(Calendar.ERA) != 0){
                 year = dateAndTime.get(dateAndTime.YEAR) + "";
                 month = dateAndTime.get(dateAndTime.MONTH) + "";
                 day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";
@@ -96,6 +96,10 @@ public class NoteManager {
             if(rowId != -1){
                 note.setId((int)rowId);
                 notes.add(note);
+                if(time.length() > 0){
+                    WakefulReceiver receiver = new WakefulReceiver();
+                    receiver.setAlarm(ctx, time);
+                }
             }
             // Have to have better way of handling
             boolean anotherCategory = !category.equals(currentCategorySelected);
@@ -246,7 +250,7 @@ public class NoteManager {
     public Calendar setupTimeGUI(View view){
         Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
-        currentTime.set(Calendar.ERA, 1);
+        currentTime.set(Calendar.ERA, 0);
 
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
@@ -272,13 +276,13 @@ public class NoteManager {
 //                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
 
                                 currentTime.set(year, month + 1, dayOfMonth, hourOfDay, minute);
-                                currentTime.set(Calendar.ERA, 2);
+                                currentTime.set(Calendar.ERA, 1);
 
                             }
                         },hour, minute, true);
                         timePickerDialog.show();
                     }
-                }, year, month, dayOfMonth);
+                }, year, month - 1, dayOfMonth);
                 datePickerDialog.show();
 
 

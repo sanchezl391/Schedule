@@ -78,9 +78,6 @@ public class noteList extends AppCompatActivity {
             }
         });
 
-
-    WakefulReceiver receiver = new WakefulReceiver();
-    receiver.setAlarm(this);
     }
 
     public void createListFromList(List<Note> noteList){
