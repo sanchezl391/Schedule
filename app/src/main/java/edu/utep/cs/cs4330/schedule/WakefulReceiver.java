@@ -46,12 +46,16 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
      *
      * @param context the context of the app's Activity.
      */
-    public void setAlarm(Context context, String time, String title) {
+    public void setAlarm(Context context, Note note) {
+        String time = note.getTime();
+        String title = note.getTitle();
+        int requestCode = note.getId();
+
         mAlarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(context, WakefulReceiver.class);
         intent.putExtra("notification", title);
 
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(context, requestCode, intent, 0);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
