@@ -99,7 +99,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
         noteTitle.setText(note.getTitle());
         noteCategory.setText(note.getCategory());
-        noteDate.setText(note.getDate());
+        noteDate.setText(note.getTime());
         setOptionsBtnListener(optionsBtn, position, note);
         setEditNoteListener(editNoteArea, note);
 

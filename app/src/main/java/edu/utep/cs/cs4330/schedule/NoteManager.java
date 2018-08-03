@@ -1,6 +1,10 @@
 package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
@@ -13,9 +17,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
+import java.util.Calendar;
 import java.util.List;
 
 public class NoteManager {
@@ -41,15 +49,9 @@ public class NoteManager {
         this.categoryBolded = categoryBolded;
     }
 
-    protected void addNote(String title, String body){
+    protected void addNote(String title, String body, Calendar dateAndTime){
 
         new Thread(() -> {
-//            swapItems()
-//            categoryNotes = categoryManager.makeCategoryList(category, notes);
-//            currentCategorySelected = category;
-//            createListFromList(categoryNotes);
-
-
 
             // Do in background
             String category = parser.getKeyword(title, categories);
@@ -59,6 +61,27 @@ public class NoteManager {
                 category = currentCategorySelected;
 
             Note note = new Note(title, body, category, "Today");
+
+
+
+            String year = dateAndTime.get(dateAndTime.YEAR) + "";
+            String month = dateAndTime.get(dateAndTime.MONTH) + "";
+            String day = dateAndTime.get(dateAndTime.DAY_OF_MONTH) + "";;
+            String hour = dateAndTime.get(dateAndTime.HOUR_OF_DAY) + "";
+            String minute = dateAndTime.get(dateAndTime.MINUTE) + "";
+            String time = year + " " + month + " " + day + " " + hour + " " + minute;
+
+            note.setTime(time);
+
+            String[] splitArray = time.split("\\s+");
+
+
+
+
+
+
+
+
             long rowId = helper.addItem(note);
 
             if(rowId != -1){
@@ -151,6 +174,18 @@ public class NoteManager {
         });
 
 
+        Calendar dateAndTime = setupTimeGUI(dView);
+
+
+
+
+
+
+
+
+
+
+
 
         EditText body = (EditText) dView.findViewById(R.id.body);
         Button addBtn = (Button) dView.findViewById(R.id.add);
@@ -169,7 +204,7 @@ public class NoteManager {
                     Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
                 }
                 else {
-                    addNote(titleTxt, bodyTxt);
+                    addNote(titleTxt, bodyTxt, dateAndTime);
                 }
                 dialog.dismiss();
             }
@@ -181,5 +216,73 @@ public class NoteManager {
             }
         });
     }
+
+    public String formatTime(int hour){
+        String format;
+      if(hour == 0){
+          hour+=12;
+          format = "AM";
+      } else if(hour == 12){
+          format = "PM";
+      } else if(hour > 12){
+        hour-= 12;
+        format = "PM";
+      } else {
+          format = "AM";
+      }
+        return format;
+    }
+
+    public Calendar setupTimeGUI(View view){
+        ImageButton timeBtn = (ImageButton) view.findViewById(R.id.time);
+        Calendar currentTime = Calendar.getInstance();
+
+
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
+        int dayOfMonth = currentTime.get(Calendar.DAY_OF_MONTH);
+        int month = currentTime.get(Calendar.MONTH);
+        int year = currentTime.get(Calendar.YEAR);
+
+        String format = formatTime(hour);
+//        timeBtn.setText(hour + " : " + minute + " " + format);
+        timeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                DatePickerDialog datePickerDialog = new DatePickerDialog(ctx, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+
+
+
+
+
+
+                        TimePickerDialog timePickerDialog = new TimePickerDialog(ctx, new TimePickerDialog.OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                formatTime(hourOfDay);
+                                Log.e("Hour: ", hourOfDay + "");
+                                Log.e("Minute: ", minute + "");
+//                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
+                                currentTime.set(year, month, dayOfMonth, hourOfDay, minute);
+                            }
+                        },hour, minute, true);
+                        timePickerDialog.show();
+                    }
+                }, year, month, dayOfMonth);
+                datePickerDialog.show();
+
+
+            }
+        });
+        return currentTime;
+    }
+
+    public void setTime(){}
+
+    public void setDate(){}
+
 
 }

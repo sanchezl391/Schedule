@@ -65,7 +65,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_BODY, note.getBody());
         values.put(KEY_CATEGORY, note.getCategory());
-        values.put(KEY_DATE, note.getDate());
+        values.put(KEY_DATE, note.getTime());
 
         long rowId = db.insert(NOTE_TABLE, null, values);
         db.close();
@@ -102,6 +102,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
                 int id = cursor.getInt(cursor.getColumnIndex(KEY_ID));
 
                 Note note = new Note(title, body, category, date);
+                note.setTime(date);
                 note.setId(id);
 
                 notes.add(note);
@@ -151,7 +152,7 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         values.put(KEY_TITLE, note.getTitle());
         values.put(KEY_BODY, note.getBody());
         values.put(KEY_CATEGORY, note.getCategory());
-        values.put(KEY_DATE, note.getDate());
+        values.put(KEY_DATE, note.getTime());
 
         int success = db.update(NOTE_TABLE,
                 values,

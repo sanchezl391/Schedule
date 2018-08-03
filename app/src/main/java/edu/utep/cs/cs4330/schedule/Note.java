@@ -1,18 +1,28 @@
 package edu.utep.cs.cs4330.schedule;
 
+import java.util.Calendar;
+
 public class Note {
     private String title;
     private String body;
     private String category;
-    private String date;
     private int id;
+    private String time;
 
     public Note (String title, String body, String category, String date){
         this.title = title;
         this.body = body;
         this.category = category;
-        this.date = date;
+        this.time = "";
 //        this.id = id;
+    }
+
+    public void setTime(String time){
+        this.time = time;
+    }
+
+    public String getTime(){
+        return time;
     }
 
     public String getTitle() {
@@ -27,9 +37,6 @@ public class Note {
         return body;
     }
 
-    public String getDate() {
-        return date;
-    }
 
     public int getId(){
         return id;
