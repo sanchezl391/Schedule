@@ -25,6 +25,8 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
     private AlarmManager mAlarmManager;
 
     public void onReceive(Context context, Intent intent) {
+        String notificationTitle = intent.getStringExtra("notification");
+
         //// TODO: post notification
         WakefulReceiver.completeWakefulIntent(intent);
         NotificationManager nm = (NotificationManager) context.getSystemService
@@ -34,7 +36,7 @@ public class WakefulReceiver extends WakefulBroadcastReceiver {
         String notificationTxt = intent.getStringExtra("notification");
         notifBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("Task Reminder")
+                .setContentTitle("Task")
                 .setContentText(notificationTxt);
         nm.notify(1, notifBuilder.build());
     }
