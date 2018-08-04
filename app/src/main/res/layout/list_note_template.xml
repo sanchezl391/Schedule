@@ -2,19 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="50dp"
     android:clickable="true"
-    android:orientation="horizontal"
-    >
+    android:orientation="horizontal">
 
     <RadioButton
         android:id="@+id/deleteBtn"
         android:layout_width="218dp"
         android:layout_height="match_parent"
+        android:layout_marginRight="15dp"
         android:layout_weight="1"
-        android:background="#ffffff"
-        android:buttonTint="@color/deleteBtn"
-        android:text="Done" />
+        android:background="#CDDC39"
+        android:buttonTint="#3F51B5"
+        android:text="Done"
+        android:textSize="18sp" />
 
     <LinearLayout
         android:id="@+id/noteEditArea"
@@ -30,8 +31,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
             android:text="title"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -46,7 +50,7 @@
                 android:layout_weight="1"
                 android:gravity="left"
                 android:text="category"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/noteDate"
@@ -54,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="date"
-                android:textSize="12sp" />
+                android:textSize="14sp" />
         </LinearLayout>
     </LinearLayout>
 

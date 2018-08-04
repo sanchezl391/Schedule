@@ -72,9 +72,6 @@ public class noteList extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 noteManager.displayAddNoteDialog(view);
-
-                Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
             }
         });
 
@@ -129,20 +126,23 @@ public class noteList extends AppCompatActivity {
                         // clear
                         m.clear();
 
+                        final int EDIT_CATEGORIES = 0;
+                        m.addSubMenu(1, EDIT_CATEGORIES, m.NONE, "Category Options");
+
                         // add addCategory
-                        final int ADD_CATEGORY = 0;
-                        m.add(m.NONE , ADD_CATEGORY, m.NONE, "Add a Category");
+                        final int ADD_CATEGORY = 1;
+                        m.add(1 , ADD_CATEGORY, m.NONE, "Add a Category");
 
                         // add deleteCategory
-                        final int DELETE_CATEGORY = 1;
-                        m.add(m.NONE , DELETE_CATEGORY, m.NONE, "Delete a Category");
+                        final int DELETE_CATEGORY = 2;
+                        m.add(1 , DELETE_CATEGORY, m.NONE, "Delete a Category");
 
                         // add all categories option
-                        final int ALL_CATEGORIES = 2;
+                        final int ALL_CATEGORIES = 3;
                         m.add(m.NONE , ALL_CATEGORIES, m.NONE, "All Categories");
 
                         // add categories to drawer
-                        int i = 3;
+                        int i = 4;
                         for (String cat : categories){
                             m.add(m.NONE , i, m.NONE, cat);
                             i++;
@@ -171,12 +171,12 @@ public class noteList extends AppCompatActivity {
                         // close drawer when item is tapped
                         mDrawerLayout.closeDrawers();
 
-                        if(menuItem.getItemId() == 0)
+                        if(menuItem.getItemId() == 1)
                             categoryManager.displayAddCategoryDialog();
-                        else if(menuItem.getItemId() == 1){
+                        else if(menuItem.getItemId() == 2){
                             categoryManager.displayDeleteCategoryDialog();
                         }
-                        else if(menuItem.getItemId() == 2){
+                        else if(menuItem.getItemId() == 3){
                             createListsFromDB();
                             currentCategorySelected = "All";
                             createListFromList(notes);
@@ -193,7 +193,6 @@ public class noteList extends AppCompatActivity {
                             categoryNotes = categoryManager.makeCategoryList(category, notes);
                             currentCategorySelected = category;
                             createListFromList(categoryNotes);
-//                            updateAdapter(categoryNotes);
                         }
 
                         return true;
@@ -201,20 +200,6 @@ public class noteList extends AppCompatActivity {
                 });
     }
 
-//    public void updateAdapter(List<Note> noteList){
-//    //Might need a different way to update adapter items
-//        listView = findViewById(R.id.listView);
-//        adapter.setNewAttributes(noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded, currentCategorySelected);
-//        listView.setAdapter(adapter);
-//
-//        adapter.swapItems(noteList);
-//
-////        categoryManager = new CategoryManager(helper, categories, adapter, this);
-////        noteManager = new NoteManager(helper, categories, adapter, this, noteList, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
-//
-//
-//
-//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

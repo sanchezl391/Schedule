@@ -5,6 +5,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spannable;
@@ -238,14 +239,17 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                         if(category.length() != 0 && !currentCategorySelected.equals("All"))
                             category = currentCategorySelected;
 
-                        if(titleTxt.length() < 1 || bodyTxt.length() < 1){
-                            Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
+                        if(titleTxt.length() < 1 ){
+                            Snackbar.make(dView, "Title is empty. Please Try again.", Snackbar.LENGTH_LONG)
+                                    .setAction("Action", null).show();
                         }
                         else {
                             boolean anotherCategory = !category.equals(currentCategorySelected);
                             boolean withinAllCategoriesAndNoKeyword = anotherCategory && currentCategorySelected.equals("All");
 
                             if(!anotherCategory || withinAllCategoriesAndNoKeyword) {
+                                Snackbar.make(dView, "Note saved successfully.", Snackbar.LENGTH_LONG)
+                                        .setAction("Action", null).show();
                                 note.setTitle(titleTxt);
                                 note.setBody(bodyTxt);
                                 updateNote(note, category, dateAndTime, clearNotificationBtn);
@@ -343,21 +347,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         });
     }
 
-//    public void setMenuOptionsClickListener(PopupMenu menu, int index, Note note) {
-//        menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-//            @Override
-//            public boolean onMenuItemClick(MenuItem option) {
-//                switch(option.getItemId()){
-//                    case R.id.deleteItemOption:
-//                        deleteNote(note);
-//                        return true;
-//                }
-//
-//                return false;
-//            }
-//
-//        });
-//    }
+
 
     public void deleteNote(Note note){
         new Thread(() -> {

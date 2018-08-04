@@ -44,15 +44,15 @@
             <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="0dp"
                 android:fillViewport="true">
 
                 <ListView
                     android:id="@+id/listView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp">
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp">
 
                 </ListView>
             </ScrollView>

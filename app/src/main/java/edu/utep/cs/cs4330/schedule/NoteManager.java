@@ -8,6 +8,7 @@ import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.Spannable;
@@ -100,6 +101,7 @@ public class NoteManager {
             if(rowId != -1){
                 note.setId((int)rowId);
                 notes.add(note);
+
                 if(time.length() > 0){
                     WakefulReceiver receiver = new WakefulReceiver();
                     receiver.setAlarm(ctx, note);
@@ -224,12 +226,15 @@ public class NoteManager {
                 String titleTxt = title.getText().toString();
                 String bodyTxt = body.getText().toString();
 
-                if(titleTxt.length() < 1 || bodyTxt.length() < 1){
-                    Toast.makeText(ctx,"One or more fields are too short or empty", Toast.LENGTH_SHORT);
+                if(titleTxt.length() < 1 ){
+                    Snackbar.make(view, "Title is empty. Please Try again.", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
                 else {
 //                    addNote(titleTxt, bodyTxt, dateAndTime);
                     addNote(titleTxt, bodyTxt, dateAndTime, clearNotificationBtn);
+                    Snackbar.make(view, "Item added successfully", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
 
                 }
                 dialog.dismiss();
