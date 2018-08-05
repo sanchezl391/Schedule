@@ -1,32 +1,18 @@
 package edu.utep.cs.cs4330.schedule;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.TextWatcher;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,11 +20,9 @@ import java.util.List;
 public class noteList extends AppCompatActivity {
     ListView listView;
     List<Note> notes;
-//    List<Note> categoryNotes;
     List<String> categories;
     NoteListDatabaseHelper helper;
     noteListAdapter adapter;
-    AlertDialog.Builder builder;
     private DrawerLayout mDrawerLayout;
     private boolean atLeastOneCategoryPresent = false;
     private boolean categoryBolded = false;
@@ -49,6 +33,10 @@ public class noteList extends AppCompatActivity {
     private NoteManager noteManager;
     private FloatingActionButton addNoteBtn;
 
+    /**
+     * setups up the layout for the activity and setups listeners
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +45,6 @@ public class noteList extends AppCompatActivity {
         helper = new NoteListDatabaseHelper(this, 3);
 
         notes = new ArrayList<Note>();
-//        categoryNotes = new ArrayList<Note>();
         categories = new ArrayList<String>();
 
         createListsFromDB();
@@ -77,19 +64,18 @@ public class noteList extends AppCompatActivity {
 
     }
 
+    /**
+     * Inflates the list view with the provided list of notes
+     * @param noteList list of notes that will be used to inflate the list
+     */
     public void createListFromList(List<Note> noteList){
-//        if(adapter == null) {
-            listView = findViewById(R.id.listView);
-            adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded, currentCategorySelected);
-            listView.setAdapter(adapter);
-//        }
-//        else{
-            adapter.swapItems(noteList);
-            categoryManager = new CategoryManager(helper, categories, adapter, this);
-            noteManager = new NoteManager(helper, categories, adapter, this, noteList, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
-//        }
+        listView = findViewById(R.id.listView);
+        adapter = new noteListAdapter(this, R.layout.list_note_template, noteList, categories, helper, atLeastOneCategoryPresent, categoryBolded, currentCategorySelected);
+        listView.setAdapter(adapter);
 
-
+        adapter.swapItems(noteList);
+        categoryManager = new CategoryManager(helper, categories, adapter, this);
+        noteManager = new NoteManager(helper, categories, adapter, this, noteList, currentCategorySelected, atLeastOneCategoryPresent, categoryBolded);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -100,6 +86,10 @@ public class noteList extends AppCompatActivity {
         });
     }
 
+    /**
+     * Handles all the UI events for the drawer. The drawer contains categories and actions for
+     * those categories
+     */
     public void setupDrawer(){
         mDrawerLayout = findViewById(R.id.drawer_layout);
 
@@ -200,17 +190,9 @@ public class noteList extends AppCompatActivity {
                 });
     }
 
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * Queries the DB to create a list of notes and categories. They contain the DB's data
+     */
     protected void createListsFromDB(){
         new Thread(() -> {
             // Do in background
