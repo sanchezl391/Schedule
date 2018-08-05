@@ -17,9 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".WakefulReceiver"/>
+        <receiver android:name=".NotificationReceiver"/>
 
-        <receiver android:name=".BootReceiver"
+        <receiver android:name=".BootupReceiver"
             android:enabled="false">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
