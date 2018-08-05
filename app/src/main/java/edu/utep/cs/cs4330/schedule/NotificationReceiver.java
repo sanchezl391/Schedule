@@ -30,7 +30,6 @@ public class NotificationReceiver extends WakefulBroadcastReceiver {
      * @param i the intent being received
      */
     public void onReceive(Context context, Intent i) {
-        String notificationTitle = i.getStringExtra("notification");
 
         NotificationReceiver.completeWakefulIntent(i);
         NotificationManager nm = (NotificationManager) context.getSystemService

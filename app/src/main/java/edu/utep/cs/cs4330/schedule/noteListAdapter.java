@@ -1,3 +1,7 @@
+/**
+ * Author: Luis Sanchez
+ */
+
 package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;

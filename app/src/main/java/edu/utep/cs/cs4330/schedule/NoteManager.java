@@ -1,10 +1,11 @@
+/**
+ * Author: Luis Sanchez
+ */
+
 package edu.utep.cs.cs4330.schedule;
 
 import android.app.Activity;
-import android.app.Application;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Typeface;
@@ -21,7 +22,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -40,6 +40,17 @@ public class NoteManager {
     private boolean atLeastOneCategoryPresent;
     private boolean categoryBolded;
 
+    /**
+     * Initializes this object
+     * @param helper the database helper
+     * @param categories list of categories
+     * @param adapter adapter used to change UI
+     * @param ctx the applications context
+     * @param notes list of notes
+     * @param currentCategorySelected the category a note has
+     * @param atLeastOneCategoryPresent wether there is a category present in the EditText
+     * @param categoryBolded wether a category has been bolded
+     */
     public NoteManager(NoteListDatabaseHelper helper, List<String> categories, noteListAdapter adapter, Context ctx, List<Note> notes, String currentCategorySelected, boolean atLeastOneCategoryPresent, boolean categoryBolded){
         this.helper = helper;
         this.categories = categories;
@@ -51,6 +62,13 @@ public class NoteManager {
         this.categoryBolded = categoryBolded;
     }
 
+    /**
+     * Adds a note to the list, DB
+     * @param title the title for the note to be added
+     * @param body the body for the note to be added
+     * @param dateAndTime contains the time for the notification
+     * @param clearNotificationBtn the button that clears notifications for an item
+     */
     protected void addNote(String title, String body, Calendar dateAndTime, Button clearNotificationBtn){
 
         new Thread(() -> {
@@ -83,19 +101,7 @@ public class NoteManager {
                 time = year + " " + month + " " + day + " " + hour + " " + minute;
             }
 
-
-
-
             note.setTime(time);
-
-
-
-
-
-
-
-
-
             long rowId = helper.addItem(note);
 
             if(rowId != -1){
@@ -103,8 +109,8 @@ public class NoteManager {
                 notes.add(note);
 
                 if(time.length() > 0){
-                    WakefulReceiver receiver = new WakefulReceiver();
-                    receiver.setAlarm(ctx, note);
+                    NotificationReceiver receiver = new NotificationReceiver();
+                    receiver.addAlarm(ctx, note);
                 }
             }
             // Have to have better way of handling
@@ -126,6 +132,10 @@ public class NoteManager {
         }).start();
     }
 
+    /**
+     * Handles UI for adding a note
+     * @param view the view for adding a note
+     */
     protected void displayAddNoteDialog(View view){
         builder = new AlertDialog.Builder(ctx);
         LayoutInflater li = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -248,22 +258,11 @@ public class NoteManager {
         });
     }
 
-    public String formatTime(int hour){
-        String format;
-      if(hour == 0){
-          hour+=12;
-          format = "AM";
-      } else if(hour == 12){
-          format = "PM";
-      } else if(hour > 12){
-        hour-= 12;
-        format = "PM";
-      } else {
-          format = "AM";
-      }
-        return format;
-    }
-
+    /**
+     * Setups the GUI for picking the time for a notification
+     * @param view the parent view for the UI
+     * @return  the calendar object containing the time data that the user chose
+     */
     public Calendar setupTimeGUI(View view){
         Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
@@ -275,8 +274,6 @@ public class NoteManager {
         int month = currentTime.get(Calendar.MONTH) + 1;
         int year = currentTime.get(Calendar.YEAR);
 
-//        String format = formatTime(hour);
-//        timeBtn.setText(hour + " : " + minute + " " + format);
         timeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -287,11 +284,6 @@ public class NoteManager {
                         TimePickerDialog timePickerDialog = new TimePickerDialog(ctx, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                formatTime(hourOfDay);
-                                Log.e("Hour: ", hourOfDay + "");
-                                Log.e("Minute: ", minute + "");
-//                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
-
                                 currentTime.set(year, month + 1, dayOfMonth, hourOfDay, minute);
                                 currentTime.set(Calendar.ERA, 1);
 
