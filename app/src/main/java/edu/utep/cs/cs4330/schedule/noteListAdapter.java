@@ -14,7 +14,6 @@ import android.text.TextWatcher;
 import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,7 +21,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -45,8 +43,8 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     Note newNote;
 
     /**
-     * Initializes ItemAdapter
-     * @param ctx The relevant context
+     * Initializes Notedapter
+     * @param ctx The applications context
      * @param rscId The template use to create a list of views
      * @param notes The list of notes that will be used to build the view
      */
@@ -62,11 +60,19 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         this.currentCategorySelected = currentCategorySelected;
     }
 
+    /**
+     * Notifies that the adapter that there has been a change in data. Updates UI
+     * @param notes list of notes that will be set to the adapter's list of notes
+     */
     public void swapItems(List<Note> notes) {
         this.notes = notes;
         this.notifyDataSetChanged();
     }
 
+    /**
+     * Adapters list of categories are updated. Updates UI
+     * @param categories list of categories that will be set to the adapter's list of categories
+     */
     public void swapCategories(List<String> categories) {
         this.categories = categories;
         notifyDataSetChanged();
@@ -74,7 +80,7 @@ public class noteListAdapter extends ArrayAdapter<Note> {
 
     /**
      * Generates a view from the template and the view is modified with values of a note
-     * @param position The position of the item within the adapter's data set of the item whose view we want.
+     * @param position The position of the note within the adapter's data set of the item whose view we want.
      * @param view The old view to reuse, if possible
      * @param parent The parent that this view will eventually be attached to
      * @return A View corresponding to the data at the specified position.
@@ -131,10 +137,10 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     }
 
 
-
     /**
-     * this whole block of code is repeated!
-     * @param editNoteArea
+     * handles editing notes
+     * @param editNoteArea the layout where the user can click to edit a note
+     * @param note the note related to the listener
      */
     public void setEditNoteListener(LinearLayout editNoteArea, Note note){
         editNoteArea.setOnClickListener(new View.OnClickListener() {
@@ -270,8 +276,14 @@ public class noteListAdapter extends ArrayAdapter<Note> {
     }
 
 
+    /**
+     * Handles updating a note that has been changed
+     * @param note the note containing the changed data
+     * @param newCategory the new category the note belongs to
+     * @param dateAndTime the new notification time for a note
+     * @param clearNotificationButton button that removes notifications for a note
+     */
     public void updateNote(Note note, String newCategory, Calendar dateAndTime, Button clearNotificationButton){
-        // first get index, must be exactly the same
         int i = -1;
         note.setCategory(newCategory);
         newNote = note;
@@ -284,10 +296,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                 newNote = n;
             }
         }
-
-
-        // ????
-
         String time = "";
 
         String notificationStatus = clearNotificationButton.getText().toString();
@@ -305,30 +313,21 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         if(!notificationsEnabled){
             time="";
         }
-
-
         note.setTime(time);
 
         notes.set(i, note);
-//        notes.set(i, newNote);
         String timeLambda = time;
 
         new Thread(() -> {
-            // Do in background
-            // We should parse in here
-
-//            long rowId = helper.updateNote(newNote);
             long rowId = helper.updateNote(note);
             if(timeLambda.length() > 0){
-                WakefulReceiver receiver = new WakefulReceiver();
-                receiver.cancelAlarm(ctx, note);
-                receiver.setAlarm(ctx, note);
+                NotificationReceiver receiver = new NotificationReceiver();
+                receiver.deleteAlarm(ctx, note);
+                receiver.addAlarm(ctx, note);
             }
 
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (rowId > 0) {
-
-
                     swapItems(notes);
                     Log.e("Success: ", "DB Add Operation Succeeded");
                 } else {
@@ -338,6 +337,12 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         }).start();
     }
 
+    /**
+     * Setups listener for clicking on the delete button
+     * @param deleteBtn button that deletes a note
+     * @param index the index of a note on the list
+     * @param note the note that will be deleted
+     */
     public void setDeleteBtnListener(Button deleteBtn, int index, Note note){
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -347,8 +352,10 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         });
     }
 
-
-
+    /**
+     * Deletes a note
+     * @param note the note to be deleted
+     */
     public void deleteNote(Note note){
         new Thread(() -> {
             // Do in background
@@ -357,8 +364,8 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             ((Activity) ctx).runOnUiThread(() -> { // UI
                 if (success > 0) {
                     if(note.getTime().length() > 0){
-                        WakefulReceiver receiver = new WakefulReceiver();
-                        receiver.cancelAlarm(ctx, note);
+                        NotificationReceiver receiver = new NotificationReceiver();
+                        receiver.deleteAlarm(ctx, note);
                     }
                     notes.remove(note);
                     swapItems(notes);
@@ -370,6 +377,12 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         }).start();
     }
 
+    /**
+     * Setups the GUI for picking the time for a notification
+     * @param view the parent view for the UI
+     * @param note The note to which the time is related
+     * @return the calendar object containing the time data that the user chose
+     */
     public Calendar setupTimeGUI(View view, Note note){
         Button timeBtn = (Button) view.findViewById(R.id.time);
         Calendar currentTime = Calendar.getInstance();
@@ -379,8 +392,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
         int hour;
         int minute;
         int year = currentTime.get(Calendar.YEAR);
-
-
 
         if(note.getTime().length() > 0){
             String[] splitArray = note.getTime().split("\\s+");
@@ -395,11 +406,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
             month = currentTime.get(Calendar.MONTH);
         }
 
-
-
-
-//        String format = formatTime(hour);
-//        timeBtn.setText(hour + " : " + minute + " " + format);
         timeBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -412,10 +418,8 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                         TimePickerDialog timePickerDialog = new TimePickerDialog(ctx, new TimePickerDialog.OnTimeSetListener() {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-//                                formatTime(hourOfDay);
                                 Log.e("Hour: ", hourOfDay + "");
                                 Log.e("Minute: ", minute + "");
-//                        timeBtn.setText(hourOfDay + " : " + minute + " " + format);
                                 currentTime.set(year, month + 1 , dayOfMonth, hourOfDay, minute);
                             }
                         },hour, minute, true);
@@ -423,8 +427,6 @@ public class noteListAdapter extends ArrayAdapter<Note> {
                     }
                 }, year, month, dayOfMonth);
                 datePickerDialog.show();
-
-
             }
         });
         return currentTime;

@@ -20,11 +20,19 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
     private static final String KEY_DATE = "date";
     private static final String KEY_CATEGORY = "category";
 
-
+    /**
+     * Initialzes the DB helper object
+     * @param ctx the application's context
+     * @param version the DB's current version
+     */
     public NoteListDatabaseHelper(Context ctx, int version) {
         super(ctx,DB_NAME, null, version );
     }
 
+    /**
+     * Creates the tables when the DB is created
+     * @param db the object that allows DB operations
+     */
     public void onCreate(SQLiteDatabase db){
         String sql = "CREATE TABLE " + NOTE_TABLE + "("
                 + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -36,6 +44,12 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         db.execSQL(sql);
     }
 
+    /**
+     * Called whenever there is change in database version
+     * @param db the object that allows DB operations
+     * @param oldVersion the DB's old version number
+     * @param newVersion the DB's new version number
+     */
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
 
         String sql = "CREATE TABLE " + CATEGORY_TABLE + "("
@@ -47,6 +61,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Adds a category to the DB
+     * @param category category to be added to the DB
+     * @return the row number to which the category was added
+     */
     public long addCategory(String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -58,6 +77,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return rowId;
     }
 
+    /**
+     * Adds a note to the DB
+     * @param note the note that contains information that will be added to the DB
+     * @return the row to which the note was added
+     */
     public long addItem(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -72,6 +96,12 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return rowId;
     }
 
+    /**
+     * Queries the database and creates a list of notes and categories
+     * @param notes the list of notes to which DB data will be saved onto
+     * @param categories the list of categories to which DB data will be saved onto
+     * @return true when all operations have been completed
+     */
     public boolean query(List notes, List categories){
         notes.clear();
         categories.clear();
@@ -92,6 +122,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return true;
     }
 
+    /**
+     * Helper method that creates the list of notes from the DB
+     * @param cursor helps iterate through DB
+     * @param notes list of notes that will contain the DB list of notes
+     */
     public void createNoteList(Cursor cursor, List notes){
         if (cursor.moveToFirst()) {
             do { // Construct item list here
@@ -113,6 +148,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         cursor.close();
     }
 
+    /**
+     * Helper method that creates the list of categories from the DB
+     * @param cursor helps iterate through DB
+     * @param categories list of categories that will contain the DB list of categories
+     */
     public void createCategoryList(Cursor cursor, List categories){
         if (cursor.moveToFirst()) {
             do { // Construct item list here
@@ -126,6 +166,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
     }
 
 
+    /**
+     * Deletes a category from the database
+     * @param category the category to be deleted from the DB
+     * @return the row from which the category was deleted
+     */
     public int deleteCategory(String category) {
         SQLiteDatabase db = this.getWritableDatabase();
         int success = db.delete(CATEGORY_TABLE,
@@ -135,6 +180,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return success;
     }
 
+    /**
+     * delets a note from the DB
+     * @param id the row where the note is stored
+     * @return the row from which the note was deleted
+     */
     public int deleteNote(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         int success = db.delete(NOTE_TABLE,
@@ -144,6 +194,11 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return success;
     }
 
+    /**
+     * Updates the note data on the DB
+     * @param note the note containing the new data
+     * @return the amount of rows that were updated
+     */
     public int updateNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -162,6 +217,12 @@ public class NoteListDatabaseHelper  extends SQLiteOpenHelper {
         return success;
     }
 
+    /**
+     * updates a category name
+     * @param category the name of the current category
+     * @param newCategoryName the name of the new category
+     * @return
+     */
     public int updateCategory(String category, String newCategoryName) {
         SQLiteDatabase db = this.getWritableDatabase();
 
